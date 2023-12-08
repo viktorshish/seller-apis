@@ -15,7 +15,6 @@ def get_product_list(last_id, client_id, seller_token):
     """Get the list of products of the ozone store.
 
     Args:
-        Args:
         last_id (str): The ID of the last product.
         client_id (str): The client ID for authenticating the request.
         seller_token (str): The seller token for authenticating the request.
@@ -26,11 +25,11 @@ def get_product_list(last_id, client_id, seller_token):
     Example:
         Correct Example:
         >>> print(get_product_list(last_id, client_id, seller_token))
-        {'products': [...], 'total': 12345,'last_id': 'new_last_id'}
+        {"filter": {"offer_id": [],"product_id": [],"visibility": "ALL"},"last_id": "","limit": 100}
 
     Incorrect Example:
         >>> print(get_product_list(last_id, client_id, seller_token))
-        TypeError: Argument 'client_id' must be of type str.
+        {"code": 0,"details": [],"message": "string"}
     """
     url = "https://api-seller.ozon.ru/v2/product/list"
     headers = {
@@ -58,7 +57,7 @@ def get_offer_ids(client_id, seller_token):
         seller_token (str): The seller token for authenticating the request.
 
     Returns:
-        offer_ids (List): A list containing offer IDs of products.
+        list: A list containing offer IDs of products.
 
     Example:
         >>> offer_ids = get_offer_ids(client_id, seller_token)
@@ -66,7 +65,7 @@ def get_offer_ids(client_id, seller_token):
         ['offer_id_1', 'offer_id_2', ...]
 
     Incorrect Example:
-        >>> client_id = 123  # Incorrect type, should be a string
+        >>> client_id = 123
         >>> seller_token = "your_seller_token"
         >>> offer_ids = get_offer_ids(client_id, seller_token)
         TypeError: Argument 'client_id' must be of type str.
@@ -90,8 +89,7 @@ def update_price(prices: list, client_id, seller_token):
     """Update the prices of products.
 
     Args:
-        prices (list): A list of dictionaries representing the updated prices
-        for products.
+        prices (list): A list of dictionaries representing the updated prices for products.
         client_id (str): The client ID for authenticating the request.
         seller_token (str): The seller token for authenticating the request.
 
@@ -99,19 +97,13 @@ def update_price(prices: list, client_id, seller_token):
         dict: A dictionary containing the result of the API request.
 
     Example:
-        >>> client_id = "your_client_id"
-        >>> seller_token = "your_seller_token"
-        >>> updated_prices = [{"offer_id": "123", "price": 15.99}, {"offer_id": "456", "price": 29.99}]
         >>> result = update_price(updated_prices, client_id, seller_token)
         >>> print(result)
-        {'result': 'success', 'errors': []}
+        {"result": [{"product_id": 1386, "offer_id": "PH8865", "updated": true, "errors": []}]}
 
     Incorrect Example:
-        >>> client_id = 123  # Incorrect type, should be a string
-        >>> seller_token = "your_seller_token"
-        >>> updated_prices = [{"offer_id": "123", "price": 15.99}, {"offer_id": "456", "price": 29.99}]
         >>> result = update_price(updated_prices, client_id, seller_token)
-        TypeError: Argument 'client_id' must be of type str.
+        {"code": 0, "details": [{"typeUrl": "string", "value": "string"}], "message": "string"}
     """
     url = "https://api-seller.ozon.ru/v1/product/import/prices"
     headers = {
@@ -128,8 +120,7 @@ def update_stocks(stocks: list, client_id, seller_token):
     """Update the stock quantities of products.
 
     Args:
-        stocks (list): A list of dictionaries representing the updated stock
-        quantities for products.
+        stocks (list): A list of dictionaries representing the updated stock quantities for products.
         client_id (str): The client ID for authenticating the request.
         seller_token (str): The seller token for authenticating the request.
 
@@ -137,19 +128,14 @@ def update_stocks(stocks: list, client_id, seller_token):
         dict: A dictionary containing the result of the API request.
 
     Example:
-        >>> client_id = "your_client_id"
-        >>> seller_token = "your_seller_token"
-        >>> updated_stocks = [{"offer_id": "123", "stock": 50}, {"offer_id": "456", "stock": 100}]
         >>> result = update_stocks(updated_stocks, client_id, seller_token)
         >>> print(result)
-        {'result': 'success', 'errors': []}
+        {"result": [{"product_id": 55946, "offer_id": "PG-2404С1", "updated": true, "errors": []}]}
 
     Incorrect Example:
-        >>> client_id = 123  # Incorrect type, should be a string
-        >>> seller_token = "your_seller_token"
-        >>> updated_stocks = [{"offer_id": "123", "stock": 50}, {"offer_id": "456", "stock": 100}]
         >>> result = update_stocks(updated_stocks, client_id, seller_token)
-        TypeError: Argument 'client_id' must be of type str.
+        >>> print(result)
+        {  "code": 0, "details": [{"typeUrl": "string", "value": "string"}], "message": "string"}
     """
     url = "https://api-seller.ozon.ru/v1/product/import/stocks"
     headers = {
@@ -166,7 +152,7 @@ def download_stock():
     """Download file from the Casio website and return a list of watch remnants.
 
     Returns:
-        List[Dict]: A list of dictionaries representing watch remnants.
+        list: A list of dictionaries representing watch remnants.
 
     Example:
         >>> watch_remnants = download_stock()
@@ -199,11 +185,9 @@ def create_stocks(watch_remnants, offer_ids):
         offer_ids (List): A list of offer IDs.
 
     Returns:
-        stocks (List): A list of dictionaries representing stock quantities.
+        list: A list of dictionaries representing stock quantities.
 
     Example:
-        >>> watch_remnants = [{"Код": "123", "Количество": ">10"}, {"Код": "456", "Количество": "1"}, ...]
-        >>> offer_ids = ["123", "456"]
         >>> stocks = create_stocks(watch_remnants, offer_ids)
         >>> print(stocks)
         [{'offer_id': '123', 'stock': 100}, {'offer_id': '456', 'stock': 0}, ...]
@@ -235,11 +219,9 @@ def create_prices(watch_remnants, offer_ids):
         offer_ids (List): A list of offer IDs.
 
     Returns:
-        List: A list of dictionaries representing prices.
+        list: A list of dictionaries representing prices.
 
     Example:
-        >>> watch_remnants = [{"Код": "123", "Цена": "199.99"}, {"Код": "456", "Цена": "149.99"}, ...]
-        >>> offer_ids = ["123", "456"]
         >>> prices = create_prices(watch_remnants, offer_ids)
         >>> print(prices)
         [{'auto_action_enabled': 'UNKNOWN', 'currency_code': 'RUB', 'offer_id': '123', 'old_price': '0', 'price': 199.99}, ...]
@@ -261,24 +243,21 @@ def create_prices(watch_remnants, offer_ids):
 def price_conversion(price: str) -> str:
     """Return the converted price value.
 
-    Convert the price by removing the signs, discarding the fractional part
-    and the name of the money signs.
+    Convert the price by removing the signs, discarding the fractional part and the name of the money signs.
 
     Args:
         price (str): Price value
 
     Returns:
-        str: Converted price with fractional part discarded and without the
-        name of the monetary sign
+        str: Converted price with fractional part discarded and without the name of the monetary sign
 
     Examples:
         Correct Usage:
         >>> price_conversion("5'990.00 руб.")
         '5990'
 
-        incorrect Usage:
+    incorrect Examples:
         >>> price_conversion(5990.0)
-        Traceback (most recent call last):
         TypeError: Invalid input type...
         """
     return re.sub("[^0-9]", "", price.split(".")[0])
@@ -295,14 +274,13 @@ def divide(lst: list, n: int):
         list: A generator yielding parts of the input list.
 
     Example:
-        >>> input_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
         >>> divided_parts = list(divide(input_list, 3))
         >>> print(divided_parts)
         [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
     Incorrect Example:
-        >>> input_list = "123456789"  # Incorrect type, should be a list
-        >>> divided_parts = list(divide(input_list, 3))
+        >>> divided_parts = list(divide(input_list, '3'))
+        >>> print(divided_parts)
         TypeError: 'str' object is not subscriptable
     """
     for i in range(0, len(lst), n):
