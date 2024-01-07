@@ -12,24 +12,24 @@ logger = logging.getLogger(__file__)
 
 
 def get_product_list(last_id, client_id, seller_token):
-    """Get the list of products of the ozone store.
+    """Получить список продуктов из магазина Ozone.
 
     Args:
-        last_id (str): The ID of the last product.
-        client_id (str): The client ID for authenticating the request.
-        seller_token (str): The seller token for authenticating the request.
+        last_id (str): ID последнего продукта
+        client_id (str): Идентификатор клиента
+        seller_token (str): Токен продавца для аутентификации запроса
 
     Returns:
-        dict: A dictionary containing the result of the API request.
+        dict: Результат запроса API с информацией о продуктах.
 
-    Example:
-        Correct Example:
-        >>> print(get_product_list(last_id, client_id, seller_token))
-        {"filter": {"offer_id": [],"product_id": [],"visibility": "ALL"},"last_id": "","limit": 100}
+    Examples:
+        >>> get_product_list("123", "client_id_xyz", "token_abc")
+        {'filter': {'offer_id': [], 'product_id': [], 'visibility': 'ALL'}, 'last_id': '', 'limit': 1000}
 
-    Incorrect Example:
-        >>> print(get_product_list(last_id, client_id, seller_token))
-        {"code": 0,"details": [],"message": "string"}
+        >>> get_product_list("456", "invalid_client_id", "invalid_token")
+        Traceback (most recent call last):
+            ...
+        requests.exceptions.HTTPError: ...
     """
     url = "https://api-seller.ozon.ru/v2/product/list"
     headers = {
@@ -50,25 +50,21 @@ def get_product_list(last_id, client_id, seller_token):
 
 
 def get_offer_ids(client_id, seller_token):
-    """Get the offer IDs of products from the Ozone store.
+    """Получить список артикулов из магазина Ozone.
 
     Args:
-        client_id (str): The client ID for authenticating the request.
-        seller_token (str): The seller token for authenticating the request.
+        client_id (str): Идентификатор клиента
+        seller_token (str): Токен продавца
 
     Returns:
-        list: A list containing offer IDs of products.
+        list: Список артикулов
 
-    Example:
-        >>> offer_ids = get_offer_ids(client_id, seller_token)
-        >>> print(offer_ids)
-        ['offer_id_1', 'offer_id_2', ...]
+    Examples:
+        >>> get_offer_ids("client_id_xyz", "token_abc")
+        [123, 456, 789]
 
-    Incorrect Example:
-        >>> client_id = 123
-        >>> seller_token = "your_seller_token"
-        >>> offer_ids = get_offer_ids(client_id, seller_token)
-        TypeError: Argument 'client_id' must be of type str.
+        >>> get_offer_ids("invalid_client_id", "invalid_token")
+        []
     """
     last_id = ""
     product_list = []
@@ -86,24 +82,24 @@ def get_offer_ids(client_id, seller_token):
 
 
 def update_price(prices: list, client_id, seller_token):
-    """Update the prices of products.
+    """Обновить цены на продукты.
 
     Args:
-        prices (list): A list of dictionaries representing the updated prices for products.
-        client_id (str): The client ID for authenticating the request.
-        seller_token (str): The seller token for authenticating the request.
+        prices (list): Список цен для обновления
+        client_id (str): Идентификатор клиента
+        seller_token (str): Токен продавца
 
     Returns:
-        dict: A dictionary containing the result of the API request.
+        dict: Результат запроса API с информацией об обновлении цен.
 
-    Example:
-        >>> result = update_price(updated_prices, client_id, seller_token)
-        >>> print(result)
-        {"result": [{"product_id": 1386, "offer_id": "PH8865", "updated": true, "errors": []}]}
+    Examples:
+        >>> update_price([{"offer_id": 123, "price": 25.99}], "client_id_xyz", "token_abc")
+        {'status': 'OK', 'errors': []}
 
-    Incorrect Example:
-        >>> result = update_price(updated_prices, client_id, seller_token)
-        {"code": 0, "details": [{"typeUrl": "string", "value": "string"}], "message": "string"}
+        >>> update_price([{"offer_id": 456, "price": 19.99}], "invalid_client_id", "invalid_token")
+        Traceback (most recent call last):
+            ...
+        requests.exceptions.HTTPError: ...
     """
     url = "https://api-seller.ozon.ru/v1/product/import/prices"
     headers = {
@@ -117,25 +113,25 @@ def update_price(prices: list, client_id, seller_token):
 
 
 def update_stocks(stocks: list, client_id, seller_token):
-    """Update the stock quantities of products.
+    """Обновить количество товаров на складе.
 
     Args:
-        stocks (list): A list of dictionaries representing the updated stock quantities for products.
-        client_id (str): The client ID for authenticating the request.
-        seller_token (str): The seller token for authenticating the request.
+        stocks (list): Список словарей, представляющих обновленные количества товаров на складе
+        client_id (str): Идентификатор клиента
+        seller_token (str): Токен продавца
 
     Returns:
-        dict: A dictionary containing the result of the API request.
+        dict: Словарь, содержащий результат запроса API.
 
     Example:
-        >>> result = update_stocks(updated_stocks, client_id, seller_token)
+        >>> result = update_stocks(updated_stocks, "client_id_xyz", "token_abc")
         >>> print(result)
         {"result": [{"product_id": 55946, "offer_id": "PG-2404С1", "updated": true, "errors": []}]}
 
-    Incorrect Example:
-        >>> result = update_stocks(updated_stocks, client_id, seller_token)
-        >>> print(result)
-        {  "code": 0, "details": [{"typeUrl": "string", "value": "string"}], "message": "string"}
+        >>> result = update_stocks(updated_stocks, "invalid_client_id", "invalid_token")
+        Traceback (most recent call last):
+            ...
+        requests.exceptions.HTTPError: ...
     """
     url = "https://api-seller.ozon.ru/v1/product/import/stocks"
     headers = {
@@ -149,15 +145,21 @@ def update_stocks(stocks: list, client_id, seller_token):
 
 
 def download_stock():
-    """Download file from the Casio website and return a list of watch remnants.
+    """Скачать и извлечь информацию об остатках часов с интернет магазина Timeworld.
 
     Returns:
-        list: A list of dictionaries representing watch remnants.
+        list: Список словарей, представляющих информацию об остатках часов
 
-    Example:
-        >>> watch_remnants = download_stock()
-        >>> print(watch_remnants)
-        [{'Watch Model': 'G-Shock GA-2100', 'Quantity': 50, 'Color': 'Black'}, ...]
+    Examples:
+        >>> download_stock()
+        [{'Код': 'PG-2404С1', 'Наименование': 'Часы Casio', 'Количество': 50},
+         {'Код': 'DW-5600BB', 'Наименование': 'Casio G-Shock', 'Количество': 30}]
+        ...
+
+        >>> download_stock()
+        Traceback (most recent call last):
+            ...
+        requests.exceptions.HTTPError: ...
     """
     casio_url = "https://timeworld.ru/upload/files/ostatki.zip"
     session = requests.Session()
@@ -178,19 +180,23 @@ def download_stock():
 
 
 def create_stocks(watch_remnants, offer_ids):
-    """Create a list of stock quantities for the given watch remnants and offer IDs.
+    """Создать список наличия товаров в магазине.
 
     Args:
-        watch_remnants (List): A list of dictionaries representing watch remnants.
-        offer_ids (List): A list of offer IDs.
+        watch_remnants (list): Список словарей с информацией об остатках товаров.
+        offer_ids (list): Список артикулов, которые уже загружены в магазин в Ozon.
 
     Returns:
-        list: A list of dictionaries representing stock quantities.
+        list: Список словарей с информацией о наличии товаров в магазине.
 
-    Example:
-        >>> stocks = create_stocks(watch_remnants, offer_ids)
-        >>> print(stocks)
-        [{'offer_id': '123', 'stock': 100}, {'offer_id': '456', 'stock': 0}, ...]
+    Examples:
+        >>> create_stocks([{"Код": "PG-2404С1", "Количество": 50}], ["PG-2404С1"])
+        [{'offer_id': 'PG-2404С1', 'stock': 50}]
+
+        >>> create_stocks("invalid_input", ["PG-2404С1"])
+        Traceback (most recent call last):
+            ...
+        TypeError: ...
     """
     # Уберем то, что не загружено в seller
     stocks = []
@@ -212,19 +218,23 @@ def create_stocks(watch_remnants, offer_ids):
 
 
 def create_prices(watch_remnants, offer_ids):
-    """Create a list of prices for the given watch remnants and offer IDs.
+    """Создать список цен на товары в магазине.
 
     Args:
-        watch_remnants (List[Dict]]): A list of dictionaries representing watch remnants.
-        offer_ids (List): A list of offer IDs.
+        watch_remnants (list): Список словарей с информацией об остатках товаров.
+        offer_ids (list): Список артикулов, которые уже загружены в магазин.
 
     Returns:
-        list: A list of dictionaries representing prices.
+        list: Список словарей с информацией о ценах на товары в магазине.
 
-    Example:
-        >>> prices = create_prices(watch_remnants, offer_ids)
-        >>> print(prices)
-        [{'auto_action_enabled': 'UNKNOWN', 'currency_code': 'RUB', 'offer_id': '123', 'old_price': '0', 'price': 199.99}, ...]
+    Examples:
+        >>> create_prices([{"Код": "PG-2404С1", "Цена": 199.99}], ["PG-2404С1"])
+        [{'auto_action_enabled': 'UNKNOWN', 'currency_code': 'RUB', 'offer_id': 'PG-2404С1', 'old_price': '0', 'price': 199.99}]
+
+        >>> create_prices("invalid_input", ["PG-2404С1"])
+        Traceback (most recent call last):
+            ...
+        TypeError: ...
     """
     prices = []
     for watch in watch_remnants:
@@ -241,47 +251,44 @@ def create_prices(watch_remnants, offer_ids):
 
 
 def price_conversion(price: str) -> str:
-    """Return the converted price value.
-
-    Convert the price by removing the signs, discarding the fractional part and the name of the money signs.
+    """Сконвертировать строку цены в числовой формат.
 
     Args:
-        price (str): Price value
+        price (str): Строка, представляющая цену.
 
     Returns:
-        str: Converted price with fractional part discarded and without the name of the monetary sign
+        str: Преобразованная строка с числовым форматом цены.
 
     Examples:
-        Correct Usage:
-        >>> price_conversion("5'990.00 руб.")
-        '5990'
+        >>> price_conversion("199.99")
+        '199'
 
-    incorrect Examples:
-        >>> price_conversion(5990.0)
-        TypeError: Invalid input type...
-        """
+        >>> price_conversion("invalid_price")
+        Traceback (most recent call last):
+            ...
+        ValueError: invalid literal for int() with base 10: 'invalid_price'
+    """
     return re.sub("[^0-9]", "", price.split(".")[0])
 
 
 def divide(lst: list, n: int):
-    """Divide the list 'lst' into parts of size 'n' elements.
+    """Разделить список на подсписки заданного размера.
 
     Args:
-        lst (list): The input list to be divided.
-        n (int): The number of elements in each part.
+        lst (list): Исходный список.
+        n (int): Размер подсписка.
 
     Yields:
-        list: A generator yielding parts of the input list.
+        list: Подсписки заданного размера.
 
-    Example:
-        >>> divided_parts = list(divide(input_list, 3))
-        >>> print(divided_parts)
+    Examples:
+        >>> list(divide([1, 2, 3, 4, 5, 6, 7, 8, 9], 3))
         [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
-    Incorrect Example:
-        >>> divided_parts = list(divide(input_list, '3'))
-        >>> print(divided_parts)
-        TypeError: 'str' object is not subscriptable
+        >>> list(divide("invalid_input", 3))
+        Traceback (most recent call last):
+            ...
+        TypeError: ...
     """
     for i in range(0, len(lst), n):
         yield lst[i : i + n]
