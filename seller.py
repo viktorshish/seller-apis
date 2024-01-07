@@ -124,8 +124,7 @@ def update_stocks(stocks: list, client_id, seller_token):
         dict: Словарь, содержащий результат запроса API.
 
     Example:
-        >>> result = update_stocks(updated_stocks, "client_id_xyz", "token_abc")
-        >>> print(result)
+        >>> update_stocks(updated_stocks, "client_id_xyz", "token_abc")
         {"result": [{"product_id": 55946, "offer_id": "PG-2404С1", "updated": true, "errors": []}]}
 
         >>> result = update_stocks(updated_stocks, "invalid_client_id", "invalid_token")
