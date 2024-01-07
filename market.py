@@ -11,6 +11,24 @@ logger = logging.getLogger(__file__)
 
 
 def get_product_list(page, campaign_id, access_token):
+    """Получить список товаров для заданной кампании.
+
+    Args:
+        page (str): Значение токена страницы
+        campaign_id (str): Идентификатор кампании
+        access_token (str): Токен доступа к API
+
+    Returns:
+        list: Список товаров для кампании
+
+    Examples:
+        >>> get_product_list("token123", "campaign456", "access_token_xyz")
+        [{'offerMappingEntries': [...], 'paging': {'nextPageToken': 'token456'}}]
+        >>> get_product_list("", "invalid_campaign", "access_token_xyz")
+        Traceback (most recent call last):
+            ...
+        requests.HTTPError: HTTP Error 404: Not Found
+    """
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -30,6 +48,24 @@ def get_product_list(page, campaign_id, access_token):
 
 
 def update_stocks(stocks, campaign_id, access_token):
+    """Обновить информацию о наличии товаров на складе.
+
+    Args:
+        stocks (list): Список записей о наличии товаров
+        campaign_id (str): Идентификатор кампании
+        access_token (str): Токен доступа к API
+
+    Returns:
+        dict: Объект ответа от API.
+
+    Examples:
+        >>> update_stocks([{"sku": "123", "warehouseId": "A", "items": [{"count": 10, "type": "FIT"}]}], "123", "token")
+         {'status': 'OK', 'updatedCount': 1}
+        >>> update_stocks([], "invalid_campaign", "token")
+        Traceback (most recent call last):
+            ...
+        requests.HTTPError: HTTP Error 404: Not Found
+    """
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -46,6 +82,24 @@ def update_stocks(stocks, campaign_id, access_token):
 
 
 def update_price(prices, campaign_id, access_token):
+    """Обновить цены.
+
+    Args:
+        prices (list): Список записей о ценах
+        campaign_id (str): Идентификатор кампании
+        access_token (str): Токен доступа к API
+
+    Returns:
+        dict: Объект ответа от API
+
+    Examples:
+        >>> update_price([{"id": "offer123", "price": {"value": 2599, "currencyId": "RUR"}}], "campaign456", "token_xyz")
+        {'status': 'OK', 'updatedCount': 1}
+        >>> update_price([], "invalid_campaign", "token_xyz")
+        Traceback (most recent call last):
+            ...
+        requests.HTTPError: HTTP Error 404: Not Found
+    """
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -62,7 +116,22 @@ def update_price(prices, campaign_id, access_token):
 
 
 def get_offer_ids(campaign_id, market_token):
-    """Получить артикулы товаров Яндекс маркета"""
+    """Получить артикулы товаров Яндекс маркета
+
+    Args:
+        campaign_id (str): Идентификатор компании
+        market_token (str): Токен магазина
+
+    Returns:
+        list: Список товаров с артикулами
+
+    Examples:
+        >>> get_offer_ids("campaign123", "market_token_xyz")
+        ['offer123', 'offer456', 'offer789']
+        >>> get_offer_ids("campaign456", "invalid_token")
+        Traceback (most recent call last):
+        CustomException: Невозможно получить список предложений. Проверьте правильность токена доступа.
+    """
     page = ""
     product_list = []
     while True:
@@ -78,6 +147,24 @@ def get_offer_ids(campaign_id, market_token):
 
 
 def create_stocks(watch_remnants, offer_ids, warehouse_id):
+    """Создать список наличии товаров на складе.
+
+    Args:
+        watch_remnants(list): Список словарей с данными об остатках товаров
+        offer_ids(list): Список артикулов
+        warehouse_id (str): Идентификатор склада
+
+    Returns:
+        list: Список записей о наличии товаров на складе и цены
+
+    Examples:
+    >>> create_stocks([], ["offer123", "offer456"], "warehouse_ABC")
+    [{'sku': 'offer123', 'warehouseId': 'warehouse_ABC', 'items': [{'count': 0, 'type': 'FIT', 'updatedAt': '2022-01-01T12:34:56Z'}]}, {'sku': 'offer456', 'warehouseId': 'warehouse_ABC', 'items': [{'count': 0, 'type': 'FIT', 'updatedAt': '2022-01-01T12:34:56Z'}]}]
+    >>> create_stocks([], ["offer123", "offer456"], "invalid_warehouse")
+    Traceback (most recent call last):
+        ...
+    CustomException: Невозможно создать записи о наличии товаров. Проверьте правильность идентификатора склада.
+    """
     # Уберем то, что не загружено в market
     stocks = list()
     date = str(datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z")
@@ -123,6 +210,21 @@ def create_stocks(watch_remnants, offer_ids, warehouse_id):
 
 
 def create_prices(watch_remnants, offer_ids):
+    """Создать записи о ценах на основе данных об остатках и артикулах.
+
+    Args:
+        watch_remnants (list): Список данных об остатках товаров
+        offer_ids (list): Список артикулов
+
+    Returns:
+        list: Список записей о ценах для артикулов
+
+    Examples:
+        >>> create_prices([{"Код": "offer123", "Цена": "25.99"}], ["offer123", "offer456"])
+        [{'id': 'offer123', 'price': {'value': 2599, 'currencyId': 'RUR'}}]
+        >>> create_prices([], ["offer123", "offer456"])
+        []
+    """
     prices = []
     for watch in watch_remnants:
         if str(watch.get("Код")) in offer_ids:
@@ -143,6 +245,22 @@ def create_prices(watch_remnants, offer_ids):
 
 
 async def upload_prices(watch_remnants, campaign_id, market_token):
+    """Асинхронно загрузить цены.
+
+    Args:
+        watch_remnants (list): Список данных об остатках товаров
+        campaign_id (str): Идентификатор кампании
+        market_token (str): Токен доступа
+
+    Returns:
+        list: Список записей о ценах
+
+    Examples:
+        >>> await upload_prices([], "campaign123", "token_xyz")
+        []
+        >>> await upload_prices([{"Код": "offer123", "Цена": "25.99"}], "campaign456", "token_xyz")
+        [{'id': 'offer123', 'price': {'value': 2599, 'currencyId': 'RUR'}}]
+    """
     offer_ids = get_offer_ids(campaign_id, market_token)
     prices = create_prices(watch_remnants, offer_ids)
     for some_prices in list(divide(prices, 500)):
