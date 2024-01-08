@@ -24,6 +24,7 @@ def get_product_list(page, campaign_id, access_token):
     Examples:
         >>> get_product_list("token123", "campaign456", "access_token_xyz")
         [{'offerMappingEntries': [...], 'paging': {'nextPageToken': 'token456'}}]
+        
         >>> get_product_list("", "invalid_campaign", "access_token_xyz")
         Traceback (most recent call last):
             ...
@@ -61,6 +62,7 @@ def update_stocks(stocks, campaign_id, access_token):
     Examples:
         >>> update_stocks([{"sku": "123", "warehouseId": "A", "items": [{"count": 10, "type": "FIT"}]}], "123", "token")
          {'status': 'OK', 'updatedCount': 1}
+         
         >>> update_stocks([], "invalid_campaign", "token")
         Traceback (most recent call last):
             ...
@@ -95,6 +97,7 @@ def update_price(prices, campaign_id, access_token):
     Examples:
         >>> update_price([{"id": "offer123", "price": {"value": 2599, "currencyId": "RUR"}}], "campaign456", "token_xyz")
         {'status': 'OK', 'updatedCount': 1}
+        
         >>> update_price([], "invalid_campaign", "token_xyz")
         Traceback (most recent call last):
             ...
@@ -128,6 +131,7 @@ def get_offer_ids(campaign_id, market_token):
     Examples:
         >>> get_offer_ids("campaign123", "market_token_xyz")
         ['offer123', 'offer456', 'offer789']
+        
         >>> get_offer_ids("campaign456", "invalid_token")
         Traceback (most recent call last):
         CustomException: Невозможно получить список предложений. Проверьте правильность токена доступа.
@@ -160,6 +164,7 @@ def create_stocks(watch_remnants, offer_ids, warehouse_id):
     Examples:
     >>> create_stocks([], ["offer123", "offer456"], "warehouse_ABC")
     [{'sku': 'offer123', 'warehouseId': 'warehouse_ABC', 'items': [{'count': 0, 'type': 'FIT', 'updatedAt': '2022-01-01T12:34:56Z'}]}, {'sku': 'offer456', 'warehouseId': 'warehouse_ABC', 'items': [{'count': 0, 'type': 'FIT', 'updatedAt': '2022-01-01T12:34:56Z'}]}]
+    
     >>> create_stocks([], ["offer123", "offer456"], "invalid_warehouse")
     Traceback (most recent call last):
         ...
@@ -222,6 +227,7 @@ def create_prices(watch_remnants, offer_ids):
     Examples:
         >>> create_prices([{"Код": "offer123", "Цена": "25.99"}], ["offer123", "offer456"])
         [{'id': 'offer123', 'price': {'value': 2599, 'currencyId': 'RUR'}}]
+        
         >>> create_prices([], ["offer123", "offer456"])
         []
     """
@@ -258,6 +264,7 @@ async def upload_prices(watch_remnants, campaign_id, market_token):
     Examples:
         >>> await upload_prices([], "campaign123", "token_xyz")
         []
+        
         >>> await upload_prices([{"Код": "offer123", "Цена": "25.99"}], "campaign456", "token_xyz")
         [{'id': 'offer123', 'price': {'value': 2599, 'currencyId': 'RUR'}}]
     """

@@ -12,7 +12,7 @@ logger = logging.getLogger(__file__)
 
 
 def get_product_list(last_id, client_id, seller_token):
-    """Получить список продуктов из магазина Ozone.
+    """Получить список продуктов из магазина Ozone.    
 
     Args:
         last_id (str): ID последнего продукта
@@ -20,7 +20,7 @@ def get_product_list(last_id, client_id, seller_token):
         seller_token (str): Токен продавца для аутентификации запроса
 
     Returns:
-        dict: Результат запроса API с информацией о продуктах.
+        list: Список словарей с информацией о наручных часах.
 
     Examples:
         >>> get_product_list("123", "client_id_xyz", "token_abc")
@@ -50,7 +50,7 @@ def get_product_list(last_id, client_id, seller_token):
 
 
 def get_offer_ids(client_id, seller_token):
-    """Получить список артикулов из магазина Ozone.
+    """Получить список артикулов наручных часов из магазина Ozone.
 
     Args:
         client_id (str): Идентификатор клиента
@@ -219,6 +219,8 @@ def create_stocks(watch_remnants, offer_ids):
 def create_prices(watch_remnants, offer_ids):
     """Создать список цен на товары в магазине.
 
+    Цены на часы определяет поставщик(интеррнет-магазин) timeworld.ru
+    
     Args:
         watch_remnants (list): Список словарей с информацией об остатках товаров.
         offer_ids (list): Список артикулов, которые уже загружены в магазин.
